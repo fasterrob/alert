@@ -16,6 +16,7 @@ import { getPosts } from "../service/api/request";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import { apiInstance } from "../service/axios";
+import { Button } from "@mui/material";
 
 function FeedPost() {
   const [posts, setPosts] = useState([]);
@@ -72,7 +73,7 @@ function FeedPost() {
         })} */}
       </>
     );
-  }
+  };
 
   const handleCommentPost = (e) => {
     setComment(e);
@@ -123,7 +124,9 @@ function FeedPost() {
             {feed.image !== "" && (
               <CardMedia component="img" height="500" image={feed.image} />
             )}
-            <Comments />
+            <CardActions>
+              <Button size="small">See comment</Button>
+            </CardActions>
             <CardActions
               disableSpacing
               sx={{
