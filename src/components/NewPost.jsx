@@ -11,13 +11,17 @@ import DialogContent from "@mui/material/DialogContent";
 import { apiInstance } from "../service/axios";
 
 function NewPost() {
-  const [open, setOpen] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [isLogin, setIsLogin] = useState("");
+  const [id, setId] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [id, setId] = useState("");
+
+  const [selectedFile, setSelectedFile] = useState();
+  const [preview, setPreview] = useState();
+
+  const [isLogin, setIsLogin] = useState(false);
   const [content, setContent] = useState("");
+
+  const [open, setOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState({
     lat: 13.7563,
     lng: 100.5018,
@@ -30,10 +34,37 @@ function NewPost() {
       setLastname(localStorage.getItem("lastname"));
     }
     getUser();
-  }, []);
+    if (id != "") {
+      setIsLogin(true);
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined);
+      return;
+    }
+    // create the preview
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedFile(e.target.files[0]);
+  };
 
   const handleClickOpen = () => {
-    if (isLogin) {
+    if (isLogin || content === "") {
+      return;
     } else {
       setOpen(true);
     }
@@ -49,6 +80,8 @@ function NewPost() {
 
   const handlePost = async () => {
     try {
+      console.log(1);
+      const formData = new FormData();
       const data = {
         userId: id,
         avatar: firstname[0],
@@ -58,9 +91,19 @@ function NewPost() {
         lat: Number(selectedLocation.lat),
         lng: Number(selectedLocation.lng),
       };
-      console.log(data);
-      const res = await apiInstance.post("/post/newpost", data);
-      console.log(res);
+      if (selectedFile === undefined) {
+        await apiInstance.post("post/newpost", data);
+      } else {
+        formData.append("image", selectedFile);
+        formData.append("data", JSON.stringify(data));
+        console.log(formData);
+
+        await apiInstance.post("/post/newpost", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+
+      window.location.reload(false);
       handleClose();
     } catch (e) {
       console.log(e);
@@ -78,7 +121,7 @@ function NewPost() {
     <>
       <Box
         sx={{
-          padding: " 0px 30px",
+          padding: "0px 30px",
           border: 1,
           borderTop: 0,
           borderColor: "gray",
@@ -95,7 +138,7 @@ function NewPost() {
             Home
           </Typography>
           <TextField
-            sx={{ width: "100%", margin: "10px 0 0 0" }}
+            sx={{ width: "100%", margin: "10px 0 " }}
             id="outlined-basic"
             label="What is happening?"
             variant="outlined"
@@ -104,8 +147,11 @@ function NewPost() {
               handleContentOnChange(e.target.value);
             }}
           />
+          {selectedFile && <img src={preview} height={200} />}
         </Box>
+
         <Box
+          gap={2}
           sx={{
             display: "flex",
             padding: "10px 20px",
@@ -114,6 +160,11 @@ function NewPost() {
             justifyContent: "space-between",
           }}
         >
+          <TextField
+            sx={{ borderRadius: "50px" }}
+            type="file"
+            onChange={onSelectFile}
+          />
           <Button
             variant="text"
             sx={{
@@ -121,22 +172,11 @@ function NewPost() {
               borderRadius: "30px",
               color: "white",
               padding: "12px",
-              width: "150px",
+              width: "100px",
             }}
-          >
-            Upload Photo
-          </Button>
-
-          <Button
-            variant="text"
-            sx={{
-              backgroundColor: "#ff8080",
-              borderRadius: "30px",
-              color: "white",
-              padding: "12px",
-              width: "80px",
+            onClick={() => {
+              handleClickOpen();
             }}
-            onClick={handleClickOpen}
           >
             POST
           </Button>

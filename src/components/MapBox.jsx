@@ -18,7 +18,6 @@ function MapBox({ isMap }) {
     async function getMarkers() {
       const res = await apiInstance.get("/post");
       setMarkers(res);
-      console.log(res);
     }
     getMarkers();
   }, []);

@@ -17,17 +17,22 @@ import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import { apiInstance } from "../service/axios";
 import { Button } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import CloseIcon from "@mui/icons-material/Close";
 
 function FeedPost() {
   const [posts, setPosts] = useState([]);
   const [comment, setComment] = useState("");
+  const [open, setOpen] = useState(false);
+  const [commentId, setCommentID] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const posts = await getPosts();
         setPosts(posts);
-        console.log(posts);
       } catch (err) {
         console.log(err);
       }
@@ -59,24 +64,18 @@ function FeedPost() {
     }
   };
 
-  const Comments = async () => {
-    const id = "65cce599350595fae1c846dd";
-    let data = await apiInstance.get(`/comment?id=${id}`);
-    console.log(data);
-    return (
-      <>
-        {/* {data.map((content) => {
-          <div>
-            <div>{content.name}</div>
-            <div>{content.commentContent}</div>
-          </div>;
-        })} */}
-      </>
-    );
-  };
-
   const handleCommentPost = (e) => {
     setComment(e);
+  };
+
+  const seeComment = (id) => {
+    handleClose();
+    console.log(id);
+    setCommentID(id);
+  };
+
+  const handleClose = () => {
+    setOpen(!open);
   };
 
   return (
@@ -122,43 +121,72 @@ function FeedPost() {
             </CardContent>
 
             {feed.image !== "" && (
-              <CardMedia component="img" height="500" image={feed.image} />
-            )}
-            <CardActions>
-              <Button size="small">See comment</Button>
-            </CardActions>
-            <CardActions
-              disableSpacing
-              sx={{
-                alignSelf: "stretch",
-                display: "flex",
-                alignItems: "flex-start",
-                p: 1,
-              }}
-            >
-              <TextField
-                sx={{ width: "100%" }}
-                id="comment"
-                label="Comment"
-                onChange={(e) => {
-                  handleCommentPost(e.target.value);
-                }}
+              <CardMedia
+                component="img"
+                height="500"
+                image={"http://localhost:4000/image/" + feed.image}
               />
-
-              <IconButton
-                type="button"
-                sx={{ p: "10px" }}
-                aria-label="sent-comment"
-                onClick={() => {
-                  sendComment(feed._id);
-                }}
-              >
-                <SendIcon />
-              </IconButton>
+            )}
+            <CardActions sx={{ justifyContent: "center" }}>
+              <Button size="small" onClick={() => seeComment(feed._id)}>
+                See comment
+              </Button>
             </CardActions>
           </Card>
         ))}
       </Stack>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Comment</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent sx={{ p: 0 }}>
+          <Box
+            sx={{
+              width: "500px",
+              height: "600px",
+            }}
+          ></Box>
+        </DialogContent>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            justifyItems: "start",
+            gap: 2,
+            p: 2,
+          }}
+        >
+          <TextField
+            sx={{ width: "100%" }}
+            id="comment"
+            label="Comment"
+            onChange={(e) => {
+              handleCommentPost(e.target.value);
+            }}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="sent-comment"
+            onClick={() => {
+              sendComment(feed._id);
+            }}
+          >
+            <SendIcon />
+          </IconButton>
+        </Box>
+      </Dialog>
     </Box>
   );
 }

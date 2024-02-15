@@ -28,7 +28,6 @@ function LeftSideBar({ isMap, onTick, closeMap }) {
         if (aftauth.status !== 404) {
           setIsLoggedIn(true);
         }
-        console.log(aftauth);
         localStorage.setItem("id", aftauth._id);
         localStorage.setItem("firstname", aftauth.firstname);
         localStorage.setItem("lastname", aftauth.lastname);
