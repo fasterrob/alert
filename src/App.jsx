@@ -5,18 +5,27 @@ import LeftSideBar from "./components/LeftSideBar";
 import NewPost from "./components/NewPost";
 import FeedPost from "./components/FeedPost";
 import MapBox from "./components/MapBox";
+import PostsHistory from "./components/PostsHistory";
 import { useState } from "react";
 
 function App() {
   const [isMap, setIsMap] = useState(false);
+  const [isHistory, setIsHistory] = useState(false);
 
-  function handleOpenMap() {
+  const handleOpenMap = () => {
+    setIsHistory(false);
     setIsMap(true);
-  }
+  };
 
-  function handleCloseMap(){
+  const handleCloseMap = () => {
+    setIsHistory(false);
     setIsMap(false);
-  }
+  };
+
+  const handleOpenHistory = () => {
+    setIsHistory(true);
+    setIsMap(false);
+  };
 
   function FullMap() {
     return (
@@ -26,12 +35,28 @@ function App() {
     );
   }
 
+  const Post = () => {
+    return (
+      <>
+        <NewPost />
+        <FeedPost />
+      </>
+    );
+  };
+
+  const History = () => {
+    return (
+      <>
+        <PostsHistory />
+      </>
+    );
+  };
+
   function HalfMap() {
     return (
       <>
         <Grid item xs={9} md={9} lg={6} xl={6.6}>
-          <NewPost />
-          <FeedPost />
+          {isHistory ? <History /> : <Post />}
         </Grid>
         <Grid item sx={{ display: { xs: "none", lg: "block" } }} lg={3}>
           <MapBox isMap={isMap} />
@@ -49,7 +74,11 @@ function App() {
         // justifyContent="space-between"
       >
         <Grid item xs={3} md={3} lg={2}>
-          <LeftSideBar isMap={isMap} onTick={handleOpenMap} closeMap={handleCloseMap} />
+          <LeftSideBar
+            onTick={handleOpenMap}
+            closeMap={handleCloseMap}
+            onTickHistory={handleOpenHistory}
+          />
         </Grid>
         {isMap ? <FullMap /> : <HalfMap />}
       </Grid>

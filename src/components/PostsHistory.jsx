@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
@@ -22,7 +22,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import CloseIcon from "@mui/icons-material/Close";
 
-function FeedPost() {
+function PostsHistory() {
   const [posts, setPosts] = useState([]);
   const [comment, setComment] = useState("");
   const [open, setOpen] = useState(false);
@@ -32,7 +32,9 @@ function FeedPost() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const posts = await getPosts();
+        const id = localStorage.getItem("id");
+        console.log(`id ${id}`);
+        const posts = await apiInstance.get(`/post/postbyuserid?id=${id}`);
         setPosts(posts);
       } catch (err) {
         console.log(err);
@@ -44,11 +46,6 @@ function FeedPost() {
   useEffect(() => {
     getComment();
   }, []);
-
-  const convertTime = (time) => {
-    const newDate = new Date(time).toISOString();
-    return newDate.split("T")[0];
-  };
 
   const getComment = async (id) => {
     const res = await apiInstance.get("/comment?id=" + id);
@@ -215,4 +212,4 @@ function FeedPost() {
   );
 }
 
-export default FeedPost;
+export default PostsHistory;

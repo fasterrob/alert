@@ -6,12 +6,13 @@ import Box from "@mui/material/Box";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from "@mui/icons-material/Map";
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+// import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import HistoryIcon from "@mui/icons-material/History";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import { auth } from "../service/api/request";
 
-function LeftSideBar({ isMap, onTick, closeMap }) {
+function LeftSideBar({ onTick, closeMap, onTickHistory }) {
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -73,7 +74,7 @@ function LeftSideBar({ isMap, onTick, closeMap }) {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-evenly",
+            justifyContent: "center",
             alignItems: "center",
             margin: 1,
             width: { xs: "150px", xl: "250px" },
@@ -92,8 +93,7 @@ function LeftSideBar({ isMap, onTick, closeMap }) {
           <Box>
             <Typography
               sx={{
-                textAlign: "center",
-                fontSize: { xs: "15", xl: "25px" },
+                fontSize: { xs: "15", xl: "20px" },
                 fontWeight: "600",
               }}
             >
@@ -101,8 +101,7 @@ function LeftSideBar({ isMap, onTick, closeMap }) {
             </Typography>
             <Typography
               sx={{
-                textAlign: "center",
-                fontSize: { xs: "15", xl: "25px" },
+                fontSize: { xs: "15", xl: "20px" },
                 fontWeight: "600",
               }}
             >
@@ -179,7 +178,8 @@ function LeftSideBar({ isMap, onTick, closeMap }) {
           variant="text"
           sx={{ mt: 2, color: "#000", justifyContent: "flex-start" }}
           size="large"
-          startIcon={<VerifiedUserIcon />}
+          onClick={onTickHistory}
+          startIcon={<HistoryIcon />}
         >
           <Typography
             sx={{
@@ -188,7 +188,7 @@ function LeftSideBar({ isMap, onTick, closeMap }) {
               fontSize: "25px",
             }}
           >
-            Verified
+            History
           </Typography>
         </Button>
 
