@@ -9,6 +9,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import { apiInstance } from "../service/axios";
+import { IconButton, Snackbar } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 function NewPost() {
   const [id, setId] = useState("");
@@ -27,16 +29,19 @@ function NewPost() {
     lng: 100.5018,
   });
 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
   useEffect(() => {
-    function getUser() {
-      setId(localStorage.getItem("id"));
+    async function getUser() {
+      const localId = localStorage.getItem("id");
+      setId(localId);
       setFirstname(localStorage.getItem("firstname"));
       setLastname(localStorage.getItem("lastname"));
+      if (localId != "") {
+        setIsLogin(true);
+      }
     }
     getUser();
-    if (id != "") {
-      setIsLogin(true);
-    }
   }, [isLogin]);
 
   useEffect(() => {
@@ -64,6 +69,7 @@ function NewPost() {
 
   const handleClickOpen = () => {
     if (isLogin || content === "") {
+      handleSnackbarOpen();
       return;
     } else {
       setOpen(true);
@@ -78,9 +84,16 @@ function NewPost() {
     setContent(e);
   };
 
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
+
+  const handleSnackbarOpen = () => {
+    setOpenSnackbar(true);
+  };
+
   const handlePost = async () => {
     try {
-      console.log(1);
       const formData = new FormData();
       const data = {
         userId: id,
@@ -230,6 +243,13 @@ function NewPost() {
           </div>
         )}
       </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: "buttom", horizontal: "right" }}
+        autoHideDuration={6000}
+        open={openSnackbar}
+        onClose={handleSnackbarClose}
+        message="Please Login"
+      />
     </>
   );
 }

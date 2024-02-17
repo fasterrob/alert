@@ -35,6 +35,7 @@ function LeftSideBar({ onTick, closeMap, onTickHistory }) {
         setUser(aftauth);
       } catch (error) {
         console.log(error);
+        localStorage.clear();
       }
     }
     if (email) {

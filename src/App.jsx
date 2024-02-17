@@ -11,6 +11,7 @@ import { useState } from "react";
 function App() {
   const [isMap, setIsMap] = useState(false);
   const [isHistory, setIsHistory] = useState(false);
+  
 
   const handleOpenMap = () => {
     setIsHistory(false);

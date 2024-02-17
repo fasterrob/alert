@@ -10,7 +10,6 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useEffect, useState } from "react";
 import { getPosts } from "../service/api/request";
 import TextField from "@mui/material/TextField";
@@ -28,12 +27,14 @@ function FeedPost() {
   const [open, setOpen] = useState(false);
   const [commentId, setCommentID] = useState("");
   const [commentInPost, setCommentInPost] = useState([]);
+  const [userID, setUserID] = useState("");
 
   useEffect(() => {
+    setUserID(localStorage.getItem("id"));
     const fetchPosts = async () => {
       try {
-        const posts = await getPosts();
-        setPosts(posts);
+        const res = await getPosts();
+        setPosts(res);
       } catch (err) {
         console.log(err);
       }
@@ -46,8 +47,10 @@ function FeedPost() {
   }, []);
 
   const convertTime = (time) => {
-    const newDate = new Date(time).toISOString();
-    return newDate.split("T")[0];
+    let newDate = new Date(time).toISOString().split("T")[0];
+    let splitDate = newDate.split("-");
+
+    return `${splitDate[2]}/${splitDate[1]}/${splitDate[0]}`;
   };
 
   const getComment = async (id) => {
@@ -69,6 +72,18 @@ function FeedPost() {
         name: name,
         commentContent: commentContent,
       });
+      handleOpen();
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const removePost = async (id) => {
+    try {
+      const res = await apiInstance.delete(`/post/removepost?id=${id}`);
+      const a = posts.filter((e) => e._id !== id);
+      setPosts(a);
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -117,12 +132,19 @@ function FeedPost() {
                 </Avatar>
               }
               action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
+                userID === feed.userId && (
+                  <IconButton
+                    aria-label="post-delete"
+                    onClick={() => {
+                      removePost(feed._id);
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                )
               }
               title={feed.name}
-              subheader={feed.createdAt}
+              subheader={convertTime(feed.createdAt)}
             />
             <CardContent>
               <Typography variant="body2" color="text.secondary">
@@ -158,23 +180,21 @@ function FeedPost() {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent sx={{ p: 0 }}>
-          <Box
-            sx={{
-              width: "500px",
-              height: "600px",
-            }}
-          >
+        <DialogContent
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            p: 0,
+            m: 1,
+          }}
+        >
+          <Box>
             {commentInPost.map((e) => (
-              <Card key={e._id} sx={{ maxWidth: 345 }}>
+              <Card key={e._id} sx={{ m: 1, minWidth: "500px" }}>
                 <CardContent>
                   <Typography variant="h6" component="div">
                     {e.name}
                   </Typography>
-                  <Typography variant="body" component="div">
-                    {e.createdAt}
-                  </Typography>
-
                   <Typography variant="body2">{e.commentContent}</Typography>
                 </CardContent>
               </Card>
