@@ -72,6 +72,23 @@ function PostsHistory() {
     }
   };
 
+  const convertTime = (time) => {
+    let newDate = new Date(time).toISOString().split("T")[0];
+    let splitDate = newDate.split("-");
+
+    return `${splitDate[2]}/${splitDate[1]}/${splitDate[0]}`;
+  };
+  const removePost = async (id) => {
+    try {
+      const res = await apiInstance.delete(`/post/removepost?id=${id}`);
+      const a = posts.filter((e) => e._id !== id);
+      setPosts(a);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleCommentPost = (e) => {
     setComment(e);
   };
@@ -114,12 +131,17 @@ function PostsHistory() {
                 </Avatar>
               }
               action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
+                <IconButton
+                  aria-label="post-delete"
+                  onClick={() => {
+                    removePost(feed._id);
+                  }}
+                >
+                  <CloseIcon />
                 </IconButton>
               }
               title={feed.name}
-              subheader={feed.createdAt}
+              subheader={convertTime(feed.createdAt)}
             />
             <CardContent>
               <Typography variant="body2" color="text.secondary">
