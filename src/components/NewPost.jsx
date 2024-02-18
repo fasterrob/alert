@@ -37,6 +37,7 @@ function NewPost() {
       setId(localId);
       setFirstname(localStorage.getItem("firstname"));
       setLastname(localStorage.getItem("lastname"));
+      console.log(localId);
       if (localId != "") {
         setIsLogin(true);
       }
@@ -68,7 +69,8 @@ function NewPost() {
   };
 
   const handleClickOpen = () => {
-    if (isLogin || content === "") {
+    console.log(isLogin);
+    if (!isLogin || content === "") {
       handleSnackbarOpen();
       return;
     } else {
