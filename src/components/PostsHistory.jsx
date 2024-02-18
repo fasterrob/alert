@@ -66,6 +66,7 @@ function PostsHistory() {
         name: name,
         commentContent: commentContent,
       });
+      handleOpen();
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -105,14 +106,25 @@ function PostsHistory() {
   return (
     <Box
       sx={{
-        padding: 2,
         borderLeft: 1,
         borderRight: 1,
         borderColor: "gray",
         height: "100%",
       }}
     >
+      <Box
+        sx={{
+          borderColor: "gray",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h3" sx={{ ml: 2, fontWeight: 600 }}>
+          History
+        </Typography>
+      </Box>
       <Stack
+        sx={{ borderTop: 1, borderColor: "gray" }}
+        p={2}
         spacing={3}
         display="flex"
         justifyContent="center"
@@ -177,23 +189,21 @@ function PostsHistory() {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent sx={{ p: 0 }}>
-          <Box
-            sx={{
-              width: "500px",
-              height: "600px",
-            }}
-          >
+        <DialogContent
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            p: 0,
+            m: 1,
+          }}
+        >
+          <Box>
             {commentInPost.map((e) => (
-              <Card key={e._id} sx={{ maxWidth: 345 }}>
+              <Card key={e._id} sx={{ m: 1, minWidth: "500px" }}>
                 <CardContent>
                   <Typography variant="h6" component="div">
                     {e.name}
                   </Typography>
-                  <Typography variant="body" component="div">
-                    {e.createdAt}
-                  </Typography>
-
                   <Typography variant="body2">{e.commentContent}</Typography>
                 </CardContent>
               </Card>
