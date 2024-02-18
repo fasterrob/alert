@@ -118,7 +118,11 @@ function PostsHistory() {
           mb: 2,
         }}
       >
-        <Typography variant="h3" sx={{ ml: 2, fontWeight: 600 }}>
+        <Typography
+          variant="h4"
+          color="initial"
+          sx={{ ml: 2, fontWeight: 600 }}
+        >
           History
         </Typography>
       </Box>
