@@ -47,7 +47,10 @@ function MapBox({ isMap }) {
 
   const position = { lat: 13.7563, lng: 100.5018 };
   const [selectedMarker, setSelectedMarker] = useState(null);
-  const handleMarkerClick = (marker) => setSelectedMarker(marker);
+  const handleMarkerClick = (marker) => {
+    console.log(marker);
+    setSelectedMarker(marker);
+  };
 
   if (!isMap) {
     return (
@@ -82,7 +85,15 @@ function MapBox({ isMap }) {
                     position={selectedMarker}
                     onClose={() => setSelectedMarker(null)}
                   >
-                    <p>{selectedMarker.content}</p>
+                    <h4>{selectedMarker.content}</h4>
+                    <br />
+                    {selectedMarker.image && (
+                      <img
+                        width={200}
+                        src={`http://localhost:4000/image/${selectedMarker.image}`}
+                      />
+                    )}
+                    <br />
                     <h6>post by: {selectedMarker.name.split()[0]}</h6>
                   </InfoWindow>
                 )}
@@ -111,9 +122,9 @@ function MapBox({ isMap }) {
           <APIProvider apiKey="AIzaSyAZ8mte6Bej6rxY27J5EBThAQYePrT0tDg">
             <div style={{ height: "95%" }}>
               <Map zoom={11} center={position} mapId={"168cb60ea2f2d43b"}>
-                {markers.map((marker) => (
+                {markers.map((marker, index) => (
                   <Marker
-                    key={marker.lat + marker.lng}
+                    key={index}
                     position={marker}
                     onClick={() => handleMarkerClick(marker)}
                   />
@@ -123,9 +134,16 @@ function MapBox({ isMap }) {
                     position={selectedMarker}
                     onClose={() => setSelectedMarker(null)}
                   >
-                    <p>{selectedMarker.content}</p>
+                    <h4>{selectedMarker.content}</h4>
                     <br />
-                    <h5 align="end">not verified</h5>
+                    {selectedMarker.image && (
+                      <img
+                        width={200}
+                        src={`http://localhost:4000/image/${selectedMarker.image}`}
+                      />
+                    )}
+                    <br />
+                    {/* <h5 align="end">not verified</h5> */}
                     <h5 align="end">post by: {selectedMarker.name}</h5>
                   </InfoWindow>
                 )}
