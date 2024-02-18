@@ -23,6 +23,8 @@ function NewPost() {
   const [isLogin, setIsLogin] = useState(false);
   const [content, setContent] = useState("");
 
+  const [openSnackbarContent, setOpenSnackbarContent] = useState(false);
+
   const [open, setOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState({
     lat: 13.7563,
@@ -69,9 +71,11 @@ function NewPost() {
   };
 
   const handleClickOpen = () => {
-    console.log(isLogin);
-    if (!isLogin || content === "") {
+    if (!isLogin) {
       handleSnackbarOpen();
+      return;
+    } else if (content === "") {
+      handleSnackbarContentOpen();
       return;
     } else {
       setOpen(true);
@@ -92,6 +96,13 @@ function NewPost() {
 
   const handleSnackbarOpen = () => {
     setOpenSnackbar(true);
+  };
+
+  const handleSnackbarContentClose = () => {
+    setOpenSnackbarContent(false);
+  };
+  const handleSnackbarContentOpen = () => {
+    setOpenSnackbarContent(true);
   };
 
   const handlePost = async () => {
@@ -246,11 +257,16 @@ function NewPost() {
         )}
       </Dialog>
       <Snackbar
-        anchorOrigin={{ vertical: "buttom", horizontal: "right" }}
         autoHideDuration={6000}
         open={openSnackbar}
         onClose={handleSnackbarClose}
         message="Please Login"
+      />
+      <Snackbar
+        autoHideDuration={6000}
+        open={openSnackbarContent}
+        onClose={handleSnackbarContentClose}
+        message="Please enter a content."
       />
     </>
   );
