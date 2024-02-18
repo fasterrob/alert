@@ -9,6 +9,7 @@ import {
   CardContent,
   CardActions,
   Button,
+  CardMedia,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { apiInstance } from "../../service/axios";
